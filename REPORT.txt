@@ -1,6 +1,16 @@
 - How did you design your benchmarks?
+I made the benchmark for populate.cpp modify every byte so that every page ended
+up getting loaded anyways.
+
+I made the benchmark for huge.cpp modify every 4kbs of a 2mb "file".
 
 - What performance differences did you see?
+The performance differences for populate.cpp were inconsistent, but the demand paging
+was generally slower for this, by around .0002 seconds. 
+
+The performance for huge.pp, when using big pages it was multiple times faster than
+using regular size pages;
+
 
 - If you have time / interest, lets try to look at what exactly caused these
 performance differences above. Our hardware has special performance counters

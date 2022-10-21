@@ -14,14 +14,14 @@ int main(int argc, char** argv){
     // No file for this one, our Linux kernel doesn't have support for file
     // backed huge pages. This will be like our naive_mmap(nullptr, length)
     // What is the flag called on Linux?
-
+    int size = 1024 * 1024 * 2;
     void* addr;
 
     // easy / hacky way to pass cmdline args
     if (argc == 1){
         // use 4k page size if no additional args
         std::cout << "Page size: 4k\n";
-        addr = 0; // TODO
+        addr = mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0); // TODO
     }
     else{
         // use 2MB page size if additional args
@@ -36,7 +36,7 @@ int main(int argc, char** argv){
         // If you want to learn more about this special setup, check out 
         // https://docs.kernel.org/admin-guide/mm/hugetlbpage.html
         std::cout << "Page size: 2MB\n";
-        addr = 0; // TODO 
+        addr = mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB, 0, 0); // TODO 
     }
 
     // Always check your return values!
@@ -45,6 +45,10 @@ int main(int argc, char** argv){
     }
 
     // TODO: run benchmark here
+    auto file = (char*) addr;
+    for(int i = 0; i<size; i+=4096){
+        file[i] = 'a';
+    }
 
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;

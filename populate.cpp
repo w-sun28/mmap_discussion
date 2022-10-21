@@ -24,16 +24,19 @@ int main(int argc, char** argv){
 
     void* addr;
 
+    int size = 5987310;
+
     // easy / hacky way to pass cmdline args
     if (argc == 1){
         // do demand paging if no additional args
         printf("Demand paging\n");
-        addr = 0; // TODO
+        addr = mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0); // TODO
+        // void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
     }
     else{
         // load all at once if additional args
         printf("Map populate\n");
-        addr = 0; // TODO 
+        addr = mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_POPULATE, fd, 0); // TODO 
     }
 
     // Always check your return values!
@@ -42,6 +45,11 @@ int main(int argc, char** argv){
     }
 
     // TODO: run benchmark here
+    auto file = (char*) addr;
+    for(int i = 0; i<size; i++){
+        file[i] = rand();
+    }
+
 
     end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
